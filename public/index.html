@@ -5,32 +5,120 @@
 <title>Proxy List</title>
 
 <style>
-body { font-family: sans-serif; }
-table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-th, td { border: 1px solid #ddd; padding: 6px; }
-
-.filter { margin-bottom: 10px; }
-.select-box { display: inline-block; margin-right: 20px; }
-
-.tags { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: 6px; }
-.tag {
-  background: #e0e0e0;
-  border-radius: 12px;
-  padding: 2px 8px;
-  font-size: 13px;
+:root {
+  --blue: #4aa3df;
+  --blue-light: #eaf6fd;
+  --border: #d8e6f3;
+  --text: #333;
+  --bg: #f5f9fc;
 }
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 24px;
+}
+
+h2 {
+  margin: 0 0 16px;
+  color: #2c6fa3;
+}
+
+.filter {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+  margin-bottom: 16px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.select-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: white;
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background: var(--blue-light);
+  color: #1d5e8a;
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+}
+
 .tag span {
   margin-left: 6px;
   cursor: pointer;
-  color: #900;
+  font-weight: bold;
+  opacity: .6;
+}
+.tag span:hover { opacity: 1; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
 }
 
-button { cursor: pointer; }
+th, td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #eef3f7;
+}
+
+th {
+  background: var(--blue-light);
+  color: #2c6fa3;
+  font-weight: 600;
+}
+
+tr:hover td {
+  background: #f8fbfe;
+}
+
+button {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
 </style>
 </head>
 <body>
 
-<h2>代理列表</h2>
+<h2>🌐 代理列表</h2>
 
 <div class="filter">
   <div class="select-box">
@@ -65,45 +153,39 @@ button { cursor: pointer; }
 
 <script>
 let data = [];
-
 const selectedCountries = new Set();
 const selectedProtocols = new Set();
 
-fetch('proxies.json')
-  .then(r => r.json())
-  .then(d => {
-    data = d;
-    init();
-    render();
-  });
+fetch('proxies.json').then(r => r.json()).then(d => {
+  data = d;
+  init();
+  render();
+});
 
 function init() {
   const cs = [...new Set(data.map(i => i.country_cn))];
-  const countrySelect = document.getElementById('countrySelect');
-
+  const sel = document.getElementById('countrySelect');
   cs.forEach(c => {
     const o = document.createElement('option');
     o.value = c;
     o.textContent = c;
-    countrySelect.appendChild(o);
+    sel.appendChild(o);
   });
 }
 
-document.getElementById('countrySelect').onchange = e => {
+countrySelect.onchange = e => {
   if (e.target.value) {
     selectedCountries.add(e.target.value);
     e.target.value = '';
-    renderTags();
-    render();
+    renderTags(); render();
   }
 };
 
-document.getElementById('protocolSelect').onchange = e => {
+protocolSelect.onchange = e => {
   if (e.target.value) {
     selectedProtocols.add(e.target.value);
     e.target.value = '';
-    renderTags();
-    render();
+    renderTags(); render();
   }
 };
 
@@ -121,37 +203,32 @@ function renderTagGroup(id, set) {
     t.innerHTML = `${v}<span>×</span>`;
     t.querySelector('span').onclick = () => {
       set.delete(v);
-      renderTags();
-      render();
+      renderTags(); render();
     };
     box.appendChild(t);
   });
 }
 
 function render() {
-  const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
-
   data.filter(i =>
     (!selectedCountries.size || selectedCountries.has(i.country_cn)) &&
     (!selectedProtocols.size || selectedProtocols.has(i.protocol))
   ).forEach(i => {
-    const rate = i.total < 5
-      ? '新节点'
+    const rate = i.total < 3 ? '新节点（测试次数小于3）'
       : `${(i.success / i.total * 100).toFixed(1)}% (${i.success}/${i.total})`;
-
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${i.ip}</td>
-      <td>${i.port}</td>
-      <td>${i.protocol}</td>
-      <td>${i.country_cn}</td>
-      <td>${i.latency} ms</td>
-      <td>${rate}</td>
-      <td>${ago(i.last_check)}</td>
-      <td><button onclick="copy('${i.ip}:${i.port}')">复制</button></td>
-    `;
-    tbody.appendChild(tr);
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td>${i.ip}</td>
+        <td>${i.port}</td>
+        <td>${i.protocol}</td>
+        <td>${i.country_cn}</td>
+        <td>${i.latency} ms</td>
+        <td>${rate}</td>
+        <td>${ago(i.last_check)}</td>
+        <td><button onclick="copy('${i.ip}:${i.port}')">复制</button></td>
+      </tr>
+    `);
   });
 }
 
@@ -163,9 +240,7 @@ function ago(ts) {
 }
 
 function copy(t) {
-  navigator.clipboard.writeText(t).then(() => {
-    alert('已复制 ' + t);
-  });
+  navigator.clipboard.writeText(t).then(() => alert('已复制 ' + t));
 }
 </script>
 
