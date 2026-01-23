@@ -16,10 +16,14 @@ FAST_TIMEOUT = 10
 DEEP_TIMEOUT = 10
 
 TEST_APIS = [
-    ("ifconfig.me", 443, "/ip"),
-    ("httpbin.org", 443, "/ip"),
-    ("api.ipify.org", 443, "/?format=json"),
-    ("api.ip.pn", 443, "/json"),
+    ("ifconfig.me", 443, "/ip", True),
+    ("httpbin.org", 443, "/ip", True),
+    ("api.ipify.org", 443, "/?format=json", True),
+    ("api.ip.pn", 443, "/json", True),
+]
+
+TEST_APIS_SOCKS4 = [
+    ("98.88.224.123", 80, "/ip", False),  # HTTP + IPv4
 ]
 
 
@@ -53,7 +57,9 @@ async def check_latency(ip, port):
 # 第二阶段：深度检测（status-only）
 # ─────────────────────────────
 def deep_check(proto, ip, port):
-    for host, hport, path in TEST_APIS:
+    apis = TEST_APIS_SOCKS4 if proto == "socks4" else TEST_APIS
+
+    for host, hport, path, use_ssl in apis:
         try:
             s = socks.socksocket()
 
@@ -67,8 +73,11 @@ def deep_check(proto, ip, port):
             s.settimeout(DEEP_TIMEOUT)
             s.connect((host, hport))
 
-            ctx = ssl.create_default_context()
-            ss = ctx.wrap_socket(s, server_hostname=host)
+            if use_ssl:
+                ctx = ssl.create_default_context()
+                ss = ctx.wrap_socket(s, server_hostname=host)
+            else:
+                ss = s
 
             req = (
                 f"GET {path} HTTP/1.1\r\n"
