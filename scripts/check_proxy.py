@@ -61,28 +61,35 @@ def socks4_latency(ip, port, timeout=FAST_TIMEOUT):
     t0 = time.time()
     s = socket.socket()
     s.settimeout(timeout)
-    s.connect((ip, port))
 
-    # SOCKS4 CONNECT
-    req = struct.pack(
-        "!BBH4sB",
-        0x04,          # VN
-        0x01,          # CD = CONNECT
-        target_port,
-        socket.inet_aton(target_ip),
-        0x00           # USERID null
-    )
+    try:
+        s.connect((ip, port))
 
-    s.sendall(req)
+        # SOCKS4 CONNECT
+        req = struct.pack(
+            "!BBH4sB",
+            0x04,          # VN
+            0x01,          # CD = CONNECT
+            target_port,
+            socket.inet_aton(target_ip),
+            0x00           # USERID null
+        )
 
-    resp = s.recv(8)
-    s.close()
+        s.sendall(req)
+        resp = s.recv(8)
 
-    if len(resp) != 8 or resp[1] != 0x5A:
+        if len(resp) != 8 or resp[1] != 0x5A:
+            return None
+
+        return int((time.time() - t0) * 1000)
+
+    except Exception:
         return None
-
-    return int((time.time() - t0) * 1000)
-
+    finally:
+        try:
+            s.close()
+        except Exception:
+            pass
 # ─────────────────────────────
 # 第二阶段：深度检测（status-only）
 # ─────────────────────────────
