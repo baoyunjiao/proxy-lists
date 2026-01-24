@@ -1,6 +1,6 @@
 # Proxy-Lists
 
-这是一个定时更新的 proxy list，包含 HTTPS|SOCKS4|SOCKS5 节点。（全都支持SSL）
+这是一个定时更新的 proxy list，包含 HTTPS|SOCKS4|SOCKS5 节点。（HTTPS、SOCKS5全都支持SSL，SOCKS4不知道😅，反正基本都不行）
 
 原理：
 
