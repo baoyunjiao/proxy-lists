@@ -140,10 +140,13 @@ async def main():
         # 每次检测都计入 total
         record["total"] += 1
 
-        latency = await check_latency(ip, port)
-        if latency is None:
-            history[pid] = record
-            continue
+        latency = None
+        if proto != "socks4":
+            latency = await check_latency(ip, port)
+            if latency is None:
+                history[pid] = record
+                continue
+
 
         ok = await loop.run_in_executor(
             None, deep_check, proto, ip, port
@@ -151,9 +154,10 @@ async def main():
 
         if ok:
             record["success"] += 1
-            record["latency"] = latency
+            record["latency"] = latency if latency is not None else -1
             record["last_check"] = now
             results.append(record)
+
 
         # 无论成功失败，都写回历史
         history[pid] = record
