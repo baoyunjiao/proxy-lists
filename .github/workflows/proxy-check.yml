@@ -1,5 +1,9 @@
 name: Proxy Check
 
+concurrency:
+  group: proxy-update
+  cancel-in-progress: true
+
 on:
   schedule:
     - cron: "*/6 * * * *"
