@@ -2,6 +2,8 @@
 <html lang="zh">
 <head>
 <meta charset="utf-8" />
+<meta name="description" content="这是一个定时更新的 proxy list（代理列表），包含 HTTPS|SOCKS4|SOCKS5 节点。（HTTPS、SOCKS5全都支持SSL，SOCKS4不确定）">
+<meta name="author" content="CB-X2-Jun">
 <title>Proxy List</title>
 
 <!-- 国旗图标 -->
@@ -318,7 +320,7 @@ function rateBar(success, total) {
 
 function latencyBar(ms) {
   const pct = Math.min(100, ms / 5000 * 100);
-  const color = ms <= 200 ? 'green' : ms <= 1500 ? 'yellow' : 'red';
+  const color = ms <= 500 ? 'green' : ms <= 1500 ? 'yellow' : 'red';
   return `
     <div class="bar-wrap">
       <div class="bar ${color}" style="width:${pct}%"></div>
