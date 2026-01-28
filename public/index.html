@@ -353,7 +353,8 @@ function render() {
   tbody.innerHTML = '';
   data.filter(i =>
     (!selectedCountries.size || selectedCountries.has(i.country_cn)) &&
-    (!selectedProtocols.size || selectedProtocols.has(i.protocol))
+    (!selectedProtocols.size || selectedProtocols.has(i.protocol)) &&
+    (!selectedPorts.size || selectedPorts.has(String(i.port)))
   ).forEach(i => {
     const rateText = i.total < 3
       ? '新节点 (测试次数小于3)'
