@@ -233,6 +233,13 @@ button {
     </select>
     <div id="protocolTags" class="tags"></div>
   </div>
+  <div class="select-box">
+  端口：
+  <select id="portSelect">
+    <option value="">选择端口</option>
+  </select>
+  <div id="portTags" class="tags"></div>
+  </div>
 </div>
 
 <table>
@@ -261,6 +268,8 @@ toggle.onchange = () => {
 let data = [];
 const selectedCountries = new Set();
 const selectedProtocols = new Set();
+const selectedPorts = new Set();
+
 
 fetch('proxies.json').then(r => r.json()).then(d => {
   data = d;
@@ -270,7 +279,12 @@ fetch('proxies.json').then(r => r.json()).then(d => {
 function init() {
   const cs = [...new Set(data.map(i => i.country_cn))];
   cs.forEach(c => countrySelect.add(new Option(c, c)));
+
+  const ps = [...new Set(data.map(i => i.port))]
+    .sort((a, b) => a - b);
+  ps.forEach(p => portSelect.add(new Option(p, p)));
 }
+
 
 countrySelect.onchange = e => {
   if (e.target.value) {
@@ -286,11 +300,19 @@ protocolSelect.onchange = e => {
     renderTags(); render();
   }
 };
+portSelect.onchange = e => {
+  if (e.target.value) {
+    selectedPorts.add(e.target.value);
+    e.target.value = '';
+    renderTags(); render();
+  }
+};
 
 function renderTags() {
   renderTagGroup('countryTags', selectedCountries, true);
   renderTagGroup('protocolTags', selectedProtocols, false);
-}
+  renderTagGroup('portTags', selectedPorts, false);
+  }
 
 function renderTagGroup(id, set, withFlag) {
   const box = document.getElementById(id);
