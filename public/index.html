@@ -279,19 +279,18 @@ let data = [];
 const selectedCountries = new Set();
 const selectedProtocols = new Set();
 const selectedPorts = new Set();
-let sortMethod = "default";  // 默认排序方式
+let sortMethod = 'default';
 
-// 排序选择框监听
-const sortSelect = document.getElementById('sortSelect');
-sortSelect.onchange = e => {
-  sortMethod = e.target.value;
-  render();
-};
-
-fetch('proxies.json').then(r => r.json()).then(d => {
-  data = d;
-  init(); render();
-});
+fetch('proxies.json')
+  .then(r => r.json())
+  .then(d => {
+    data = d.map((i, idx) => ({
+      ...i,
+      __index: idx   // 保证“默认顺序”
+    }));
+    init();
+    render();
+  });
 
 function init() {
   const cs = [...new Set(data.map(i => i.country_cn))];
@@ -301,17 +300,34 @@ function init() {
   ps.forEach(p => portSelect.add(new Option(p, p)));
 }
 
-// 排序函数
-function sortData(data) {
-  switch (sortMethod) {
-    case 'latency':
-      return data.sort((a, b) => a.latency - b.latency || a.id.localeCompare(b.id));  // 延迟升序，延迟相同按原顺序
-    case 'successRate':
-      return data.sort((a, b) => (b.success / b.total) - (a.success / a.total) || a.id.localeCompare(b.id));  // 成功率降序，相同按原顺序
-    default:
-      return data;  // 默认按原数据排序
+countrySelect.onchange = e => {
+  if (e.target.value) {
+    selectedCountries.add(e.target.value);
+    e.target.value = '';
+    renderTags(); render();
   }
-}
+};
+
+protocolSelect.onchange = e => {
+  if (e.target.value) {
+    selectedProtocols.add(e.target.value);
+    e.target.value = '';
+    renderTags(); render();
+  }
+};
+
+portSelect.onchange = e => {
+  if (e.target.value) {
+    selectedPorts.add(e.target.value);
+    e.target.value = '';
+    renderTags(); render();
+  }
+};
+
+sortSelect.onchange = e => {
+  sortMethod = e.target.value;
+  render();
+};
 
 function renderTags() {
   renderTagGroup('countryTags', selectedCountries, true);
@@ -327,11 +343,17 @@ function renderTagGroup(id, set, withFlag) {
     t.className = 'tag';
     const code = withFlag ? data.find(i => i.country_cn === v)?.country : '';
     t.innerHTML = `${code ? `<span class="fi fi-${code.toLowerCase()}"></span>` : ''}${v}<span>×</span>`;
-    t.lastChild.onclick = () => { set.delete(v); renderTags(); render(); };
+    t.lastChild.onclick = () => {
+      set.delete(v);
+      renderTags(); render();
+    };
     box.appendChild(t);
   });
 }
 
+/* =====================
+   进度条逻辑（原样）
+===================== */
 function rateBar(success, total) {
   if (!total) return '';
   const pct = Math.min(100, success / total * 100);
@@ -351,21 +373,32 @@ function latencyBar(ms) {
     </div>`;
 }
 
+/* =====================
+   ✅ 渲染 + 排序（只在这里加）
+===================== */
 function render() {
   tbody.innerHTML = '';
-  
-  // 根据筛选条件过滤数据
-  const filteredData = data.filter(i =>
+
+  let list = data.filter(i =>
     (!selectedCountries.size || selectedCountries.has(i.country_cn)) &&
     (!selectedProtocols.size || selectedProtocols.has(i.protocol)) &&
     (!selectedPorts.size || selectedPorts.has(String(i.port)))
   );
 
-  // 对数据进行排序
-  const sortedData = sortData(filteredData);
+  if (sortMethod === 'latency') {
+    list = list.slice().sort((a, b) =>
+      a.latency - b.latency || a.__index - b.__index
+    );
+  } else if (sortMethod === 'success') {
+    list = list.slice().sort((a, b) => {
+      const ra = a.total ? a.success / a.total : 0;
+      const rb = b.total ? b.success / b.total : 0;
+      return rb - ra || a.__index - b.__index;
+    });
+  }
+  // default：什么都不做，保持 __index 顺序
 
-  // 渲染排序后的数据
-  sortedData.forEach(i => {
+  list.forEach(i => {
     const rateText = i.total < 3
       ? '新节点 (测试次数小于3)'
       : `${(i.success / i.total * 100).toFixed(1)}% (${i.success}/${i.total})`;
@@ -375,9 +408,11 @@ function render() {
         <td>${i.ip}</td>
         <td>${i.port}</td>
         <td>${i.protocol}</td>
-        <td><span class="country">
-          <span class="fi fi-${i.country.toLowerCase()}"></span>${i.country_cn}
-        </span></td>
+        <td>
+          <span class="country">
+            <span class="fi fi-${i.country.toLowerCase()}"></span>${i.country_cn}
+          </span>
+        </td>
         <td>${i.latency} ms${latencyBar(i.latency)}</td>
         <td>${rateText}${rateBar(i.success, i.total)}</td>
         <td>${ago(i.last_check)}</td>
@@ -388,16 +423,17 @@ function render() {
 }
 
 function ago(ts) {
-  const s = Math.floor(Date.now()/1000 - ts);
+  const s = Math.floor(Date.now() / 1000 - ts);
   if (s < 60) return s + ' 秒前';
-  if (s < 3600) return Math.floor(s/60) + ' 分钟前';
-  return Math.floor(s/3600) + ' 小时前';
+  if (s < 3600) return Math.floor(s / 60) + ' 分钟前';
+  return Math.floor(s / 3600) + ' 小时前';
 }
 
 function copy(t) {
   navigator.clipboard.writeText(t).then(() => alert('已复制 ' + t));
 }
 </script>
+
 
 </body>
 </html>
