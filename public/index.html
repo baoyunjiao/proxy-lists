@@ -376,6 +376,9 @@ function latencyBar(ms) {
 /* =====================
    ✅ 渲染 + 排序（只在这里加）
 ===================== */
+/* =====================
+   ✅ 渲染 + 排序（修复成功率排序问题）
+===================== */
 function render() {
   tbody.innerHTML = '';
 
@@ -385,19 +388,23 @@ function render() {
     (!selectedPorts.size || selectedPorts.has(String(i.port)))
   );
 
+  // 排序方式：根据选择的排序字段进行排序
   if (sortMethod === 'latency') {
     list = list.slice().sort((a, b) =>
       a.latency - b.latency || a.__index - b.__index
     );
-  } else if (sortMethod === 'success') {
+  } else if (sortMethod === 'successRate') {
     list = list.slice().sort((a, b) => {
-      const ra = a.total ? a.success / a.total : 0;
-      const rb = b.total ? b.success / b.total : 0;
-      return rb - ra || a.__index - b.__index;
+      const ra = a.total ? a.success / a.total : 0;  // 计算成功率
+      const rb = b.total ? b.success / b.total : 0;  // 计算成功率
+      return rb - ra || a.__index - b.__index; // 按成功率降序排列，若相同按原顺序排序
     });
+  } else {
+    // 默认排序：保持原顺序
+    list = list.slice().sort((a, b) => a.__index - b.__index);
   }
-  // default：什么都不做，保持 __index 顺序
 
+  // 渲染表格
   list.forEach(i => {
     const rateText = i.total < 3
       ? '新节点 (测试次数小于3)'
