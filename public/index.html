@@ -233,12 +233,22 @@ button {
     </select>
     <div id="protocolTags" class="tags"></div>
   </div>
+  
   <div class="select-box">
-  端口：
-  <select id="portSelect">
-    <option value="">选择端口</option>
-  </select>
-  <div id="portTags" class="tags"></div>
+    端口：
+    <select id="portSelect">
+      <option value="">选择端口</option>
+    </select>
+    <div id="portTags" class="tags"></div>
+  </div>
+  
+  <div class="select-box">
+    排序方式：
+    <select id="sortSelect">
+      <option value="default">默认</option>
+      <option value="latency">延迟</option>
+      <option value="successRate">成功率</option>
+    </select>
   </div>
 </div>
 
@@ -269,7 +279,14 @@ let data = [];
 const selectedCountries = new Set();
 const selectedProtocols = new Set();
 const selectedPorts = new Set();
+let sortMethod = "default";  // 默认排序方式
 
+// 排序选择框监听
+const sortSelect = document.getElementById('sortSelect');
+sortSelect.onchange = e => {
+  sortMethod = e.target.value;
+  render();
+};
 
 fetch('proxies.json').then(r => r.json()).then(d => {
   data = d;
@@ -280,39 +297,27 @@ function init() {
   const cs = [...new Set(data.map(i => i.country_cn))];
   cs.forEach(c => countrySelect.add(new Option(c, c)));
 
-  const ps = [...new Set(data.map(i => i.port))]
-    .sort((a, b) => a - b);
+  const ps = [...new Set(data.map(i => i.port))].sort((a, b) => a - b);
   ps.forEach(p => portSelect.add(new Option(p, p)));
 }
 
-
-countrySelect.onchange = e => {
-  if (e.target.value) {
-    selectedCountries.add(e.target.value);
-    e.target.value = '';
-    renderTags(); render();
+// 排序函数
+function sortData(data) {
+  switch (sortMethod) {
+    case 'latency':
+      return data.sort((a, b) => a.latency - b.latency || a.id.localeCompare(b.id));  // 延迟升序，延迟相同按原顺序
+    case 'successRate':
+      return data.sort((a, b) => (b.success / b.total) - (a.success / a.total) || a.id.localeCompare(b.id));  // 成功率降序，相同按原顺序
+    default:
+      return data;  // 默认按原数据排序
   }
-};
-protocolSelect.onchange = e => {
-  if (e.target.value) {
-    selectedProtocols.add(e.target.value);
-    e.target.value = '';
-    renderTags(); render();
-  }
-};
-portSelect.onchange = e => {
-  if (e.target.value) {
-    selectedPorts.add(e.target.value);
-    e.target.value = '';
-    renderTags(); render();
-  }
-};
+}
 
 function renderTags() {
   renderTagGroup('countryTags', selectedCountries, true);
   renderTagGroup('protocolTags', selectedProtocols, false);
   renderTagGroup('portTags', selectedPorts, false);
-  }
+}
 
 function renderTagGroup(id, set, withFlag) {
   const box = document.getElementById(id);
@@ -327,9 +332,6 @@ function renderTagGroup(id, set, withFlag) {
   });
 }
 
-/* =====================
-   ✅ 进度条计算逻辑
-===================== */
 function rateBar(success, total) {
   if (!total) return '';
   const pct = Math.min(100, success / total * 100);
@@ -351,11 +353,19 @@ function latencyBar(ms) {
 
 function render() {
   tbody.innerHTML = '';
-  data.filter(i =>
+  
+  // 根据筛选条件过滤数据
+  const filteredData = data.filter(i =>
     (!selectedCountries.size || selectedCountries.has(i.country_cn)) &&
     (!selectedProtocols.size || selectedProtocols.has(i.protocol)) &&
     (!selectedPorts.size || selectedPorts.has(String(i.port)))
-  ).forEach(i => {
+  );
+
+  // 对数据进行排序
+  const sortedData = sortData(filteredData);
+
+  // 渲染排序后的数据
+  sortedData.forEach(i => {
     const rateText = i.total < 3
       ? '新节点 (测试次数小于3)'
       : `${(i.success / i.total * 100).toFixed(1)}% (${i.success}/${i.total})`;
