@@ -8,7 +8,8 @@
 
 ## 测试方式✅
 
-HTTPS & SOCKS5 的代理，使用 `https://ifconfig.me/ip` `https://httpbin.org/ip` `https://api.ipify.org/?format=json` `https://api.ip.pn/json`。
+HTTPS & SOCKS5 的代理，使用 `https://ifconfig.me/ip` `https://httpbin.org/ip` `https://api.ipify.org/?format=json` `https://api.i.pn/json`。
+
 SOCKS4 代理，使用 `http://52.20.30.6/ip` `http://54.147.217.198/ip`
 
 ## 贡献新代理✨
