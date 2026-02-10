@@ -19,7 +19,7 @@ TEST_APIS = [
     ("ifconfig.me", 443, "/ip", True),
     ("httpbin.org", 443, "/ip", True),
     ("api.ipify.org", 443, "/?format=json", True),
-    ("api.ip.pn", 443, "/json", True),
+    ("api.i.pn", 443, "/json", True),
 ]
 
 TEST_APIS_SOCKS4 = [
