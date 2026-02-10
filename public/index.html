@@ -315,7 +315,7 @@ function render() {
   updateStats(list);
 
   list.forEach(i=>{
-    const rate=i.total<3?'新节点':`${(i.success/i.total*100).toFixed(1)}% (${i.success}/${i.total})`;
+    const rate=i.total<3?'新节点 (测试次数小于3)':`${(i.success/i.total*100).toFixed(1)}% (${i.success}/${i.total})`;
     tbody.insertAdjacentHTML('beforeend',`
 <tr>
 <td>${i.ip}</td><td>${i.port}</td><td>${i.protocol}</td>
