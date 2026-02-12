@@ -9,8 +9,7 @@ on:
 #     - cron: "*/59 * * * *"
   workflow_dispatch:
   workflow_run:
-    workflows:
-      - Deploy static content to Pages
+    workflows: [Deploy static content to Pages]
     types:
       - completed
 
