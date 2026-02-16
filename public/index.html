@@ -150,6 +150,20 @@ button {
   padding: 4px 10px;
   cursor: pointer;
 }
+  /* ===== 批量复制按钮样式 ===== */
+.export-btn {
+  background: white;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background: var(--blue-light);
+}
+
 
 /* ===================== 进度条 ===================== */
 .bar-wrap {
@@ -216,6 +230,11 @@ button {
       <option value="latency">延迟</option>
       <option value="success">成功率</option>
     </select>
+  </div>
+
+  <div class="select-box">
+  <button class="export-btn" onclick="copyAll(true)">复制当前所有代理（带协议）</button>
+  <button class="export-btn" onclick="copyAll(false)">复制当前所有代理（不带协议）</button>
   </div>
 </div>
 
@@ -327,6 +346,32 @@ function render() {
 </tr>`);
   });
 }
+
+function getFilteredList() {
+  return data.filter(i =>
+    (!selectedCountries.size||selectedCountries.has(i.country_cn)) &&
+    (!selectedProtocols.size||selectedProtocols.has(i.protocol)) &&
+    (!selectedPorts.size||selectedPorts.has(String(i.port)))
+  );
+}
+
+function copyAll(withProtocol) {
+  const list = getFilteredList();
+  if (!list.length) {
+    alert('当前筛选结果为空');
+    return;
+  }
+
+  const lines = list.map(i => {
+    return withProtocol
+      ? `${i.protocol}://${i.ip}:${i.port}`
+      : `${i.ip}:${i.port}`;
+  });
+
+  navigator.clipboard.writeText(lines.join('\n'))
+    .then(() => alert(`已复制 ${lines.length} 条代理`));
+}
+
 
 function ago(ts){const s=Date.now()/1000-ts;return s<60?`${s|0} 秒前`:s<3600?`${s/60|0} 分钟前`:`${s/3600|0} 小时前`;}
 function copy(t){navigator.clipboard.writeText(t).then(()=>alert('已复制 '+t));}
