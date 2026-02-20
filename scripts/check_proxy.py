@@ -23,12 +23,12 @@ TEST_APIS = [
 ]
 
 TEST_APIS_SOCKS4 = [
-    ("3.95.121.17", 80, "/ip", False),  # HTTP + IPv4
-    ("3.210.41.225", 80, "/ip", False),
-    ("44.197.91.61", 80, "/ip", False),
-    ("52.204.75.48", 80, "/ip", False),
+    ("3.232.78.107", 80, "/ip", False),  # HTTP + IPv4
     ("54.236.169.179", 80, "/ip", False),
-    ("98.91.115.81", 80, "/ip", False),
+    ("44.195.71.76", 80, "/ip", False),
+    ("35.174.219.145", 80, "/ip", False),
+    ("52.202.125.113", 80, "/ip", False),
+    ("52.200.102.227", 80, "/ip", False),
 ]
 
 
@@ -60,7 +60,7 @@ async def check_latency(ip, port):
 def socks4_latency(ip, port, timeout=FAST_TIMEOUT):
     import socket, struct, time
 
-    target_ip = "3.210.41.225"
+    target_ip = "3.232.78.107"
     target_port = 80
 
     t0 = time.time()
