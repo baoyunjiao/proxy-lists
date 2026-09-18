@@ -1,51 +1,39 @@
 [
   {
-    "id": "https_34.96.238.40_8080",
-    "ip": "34.96.238.40",
-    "port": 8080,
-    "protocol": "https",
-    "country": "HK",
-    "country_cn": "香港",
-    "success": 1145,
-    "total": 2446,
-    "latency": 200,
-    "last_check": 1789705575
-  },
-  {
-    "id": "socks5_168.253.92.93_10808",
-    "ip": "168.253.92.93",
-    "port": 10808,
-    "protocol": "socks5",
-    "country": "ZA",
-    "country_cn": "南非",
-    "success": 909,
-    "total": 2442,
-    "latency": 3347,
-    "last_check": 1789705575
-  },
-  {
-    "id": "https_38.194.246.34_999",
-    "ip": "38.194.246.34",
+    "id": "https_38.183.183.114_999",
+    "ip": "38.183.183.114",
     "port": 999,
     "protocol": "https",
-    "country": "MX",
-    "country_cn": "墨西哥",
-    "success": 1615,
-    "total": 2423,
-    "latency": 5169,
-    "last_check": 1789705575
+    "country": "PE",
+    "country_cn": "秘鲁",
+    "success": 317,
+    "total": 2447,
+    "latency": 2186,
+    "last_check": 1789729364
   },
   {
-    "id": "https_186.65.104.52_2024",
-    "ip": "186.65.104.52",
-    "port": 2024,
-    "protocol": "https",
-    "country": "BR",
-    "country_cn": "巴西",
-    "success": 217,
-    "total": 2401,
-    "latency": 4279,
-    "last_check": 1789705575
+    "id": "socks5_121.169.46.116_1090",
+    "ip": "121.169.46.116",
+    "port": 1090,
+    "protocol": "socks5",
+    "country": "KR",
+    "country_cn": "韩国",
+    "success": 2179,
+    "total": 2429,
+    "latency": 190,
+    "last_check": 1789729364
+  },
+  {
+    "id": "socks5_94.233.120.194_1080",
+    "ip": "94.233.120.194",
+    "port": 1080,
+    "protocol": "socks5",
+    "country": "RU",
+    "country_cn": "俄罗斯",
+    "success": 570,
+    "total": 2424,
+    "latency": 5294,
+    "last_check": 1789729364
   },
   {
     "id": "https_195.158.8.123_3128",
@@ -54,10 +42,10 @@
     "protocol": "https",
     "country": "UZ",
     "country_cn": "乌兹别克斯坦",
-    "success": 2031,
-    "total": 2299,
-    "latency": 217,
-    "last_check": 1789705575
+    "success": 2032,
+    "total": 2300,
+    "latency": 2193,
+    "last_check": 1789729364
   },
   {
     "id": "https_185.195.71.218_18080",
@@ -66,34 +54,22 @@
     "protocol": "https",
     "country": "CH",
     "country_cn": "瑞士",
-    "success": 32,
-    "total": 2097,
-    "latency": 144,
-    "last_check": 1789705575
+    "success": 33,
+    "total": 2098,
+    "latency": 103,
+    "last_check": 1789729364
   },
   {
-    "id": "https_146.190.80.158_9090",
-    "ip": "146.190.80.158",
-    "port": 9090,
+    "id": "https_102.164.252.150_8080",
+    "ip": "102.164.252.150",
+    "port": 8080,
     "protocol": "https",
-    "country": "SG",
-    "country_cn": "新加坡",
-    "success": 1139,
-    "total": 2047,
-    "latency": 217,
-    "last_check": 1789705575
-  },
-  {
-    "id": "https_128.199.254.13_9090",
-    "ip": "128.199.254.13",
-    "port": 9090,
-    "protocol": "https",
-    "country": "SG",
-    "country_cn": "新加坡",
-    "success": 1193,
-    "total": 2047,
-    "latency": 220,
-    "last_check": 1789705575
+    "country": "GQ",
+    "country_cn": "赤道几内亚",
+    "success": 388,
+    "total": 2048,
+    "latency": 3280,
+    "last_check": 1789729364
   },
   {
     "id": "socks5_195.91.129.101_1337",
@@ -102,34 +78,22 @@
     "protocol": "socks5",
     "country": "RU",
     "country_cn": "俄罗斯",
-    "success": 545,
-    "total": 2047,
-    "latency": 1220,
-    "last_check": 1789705575
+    "success": 546,
+    "total": 2048,
+    "latency": 127,
+    "last_check": 1789729364
   },
   {
-    "id": "https_190.12.150.244_999",
-    "ip": "190.12.150.244",
-    "port": 999,
-    "protocol": "https",
-    "country": "EC",
-    "country_cn": "厄瓜多尔",
-    "success": 1675,
-    "total": 2047,
-    "latency": 107,
-    "last_check": 1789705575
-  },
-  {
-    "id": "socks5_5.255.117.127_1080",
-    "ip": "5.255.117.127",
+    "id": "socks5_102.0.14.42_1080",
+    "ip": "102.0.14.42",
     "port": 1080,
     "protocol": "socks5",
-    "country": "NL",
-    "country_cn": "荷兰",
-    "success": 1546,
-    "total": 2022,
-    "latency": 133,
-    "last_check": 1789705575
+    "country": "KE",
+    "country_cn": "肯尼亚",
+    "success": 619,
+    "total": 1871,
+    "latency": 5320,
+    "last_check": 1789729364
   },
   {
     "id": "https_45.186.6.104_3128",
@@ -138,21 +102,21 @@
     "protocol": "https",
     "country": "EC",
     "country_cn": "厄瓜多尔",
-    "success": 1513,
-    "total": 1729,
-    "latency": 119,
-    "last_check": 1789705575
+    "success": 1514,
+    "total": 1730,
+    "latency": 86,
+    "last_check": 1789729364
   },
   {
-    "id": "https_36.147.78.166_443",
-    "ip": "36.147.78.166",
-    "port": 443,
+    "id": "https_103.155.246.42_8080",
+    "ip": "103.155.246.42",
+    "port": 8080,
     "protocol": "https",
-    "country": "CN",
-    "country_cn": "中国",
-    "success": 695,
-    "total": 1729,
-    "latency": 264,
-    "last_check": 1789705575
+    "country": "ID",
+    "country_cn": "印度尼西亚",
+    "success": 258,
+    "total": 1730,
+    "latency": 5347,
+    "last_check": 1789729364
   }
 ]
